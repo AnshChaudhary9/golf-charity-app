@@ -21,14 +21,14 @@ async function seedAdmin() {
     console.log('Admin user already exists. Updating role to Admin...');
     await mongoose.connection.db.collection('users').updateOne(
       { email: adminEmail },
-      { $set: { role: 'Admin' } }
+      { $set: { role: 'Admin', passwordHash: hashedPassword } }
     );
   } else {
     console.log('Creating new Admin user...');
     await mongoose.connection.db.collection('users').insertOne({
       name: 'Platform Admin',
       email: adminEmail,
-      password: hashedPassword,
+      passwordHash: hashedPassword,
       role: 'Admin',
       createdAt: new Date(),
       updatedAt: new Date()

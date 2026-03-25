@@ -350,7 +350,7 @@ export default class App extends Component<{}, State> {
         )}
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem', textAlign: 'left' }}>
-          <div className="dashboard-card" style={{ background: 'rgba(255,255,255,0.03)' }}>
+          <div className="admin-sub-card">
             <h3>Registered Users ({this.state.allUsers.length})</h3>
             <ul style={{ maxHeight: '300px', overflowY: 'auto', listStyle: 'none', padding: 0, marginTop: '1rem' }}>
               {this.state.allUsers.map((u: any) => (
@@ -364,7 +364,7 @@ export default class App extends Component<{}, State> {
             </ul>
           </div>
           
-          <div className="dashboard-card" style={{ background: 'rgba(255,255,255,0.03)' }}>
+          <div className="admin-sub-card">
             <h3>Manage Charities</h3>
             <form onSubmit={this.handleCreateCharity} style={{ marginBottom: '1.5rem' }}>
               <input type="text" name="newCharityName" placeholder="Charity Name" value={this.state.newCharityName} onChange={this.handleInputChange} required />

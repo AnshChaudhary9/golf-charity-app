@@ -130,7 +130,13 @@ h2 {
 .charities-preview {
   padding-bottom: 3rem;
 }
-/* Navigation Buttons */
+.admin-sub-card {
+  background: rgba(255,255,255,0.03);
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+  width: 100%;
+}
 .nav-btn-gold {
   background: rgba(212,175,55,0.15);
   border: 2px solid var(--secondary);
