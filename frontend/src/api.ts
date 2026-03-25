@@ -1,5 +1,5 @@
 export class ApiService {
-  private static readonly baseUrl = 'http://localhost:3000/api';
+  private static readonly baseUrl = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000') + '/api';
   private static token: string | null = null;
 
   static setToken(t: string) {
