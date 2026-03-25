@@ -24,6 +24,8 @@ interface State {
   analytics: any;
   newCharityName: string;
   newCharityDesc: string;
+  viewLanding: boolean;
+  currentRoute: string;
 }
 
 export default class App extends Component<{}, State> {
@@ -51,12 +53,39 @@ export default class App extends Component<{}, State> {
       analytics: null,
       newCharityName: '',
       newCharityDesc: '',
-      viewLanding: true
+      viewLanding: true,
+      currentRoute: window.location.pathname
     };
   }
 
   async componentDidMount() {
     this.loadCharities();
+    window.addEventListener('popstate', this.handleRouteSync);
+    this.handleInitialRoute();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('popstate', this.handleRouteSync);
+  }
+
+  handleRouteSync = () => {
+    this.setState({ currentRoute: window.location.pathname });
+  }
+
+  handleInitialRoute = () => {
+    const path = window.location.pathname;
+    if (path === '/admin') {
+      this.setState({ showAuth: !this.state.isLoggedIn, viewLanding: false });
+    } else if (path === '/dashboard') {
+      this.setState({ showAuth: !this.state.isLoggedIn, viewLanding: false });
+    }
+  }
+
+  navigate = (path: string) => {
+    window.history.pushState({}, '', path);
+    this.setState({ currentRoute: path, showAuth: false });
+    if (path === '/') this.setState({ viewLanding: true });
+    else this.setState({ viewLanding: false });
   }
 
   loadCharities = async () => {
@@ -89,10 +118,10 @@ export default class App extends Component<{}, State> {
 
       this.setState({
         isLoggedIn: true,
-        viewLanding: false,
         userRole: data?.user?.role || 'User',
         selectedCharity: data?.user?.selectedCharity || selectedCharity,
       });
+      this.navigate(data?.user?.role === 'Admin' ? '/admin' : '/dashboard');
 
       if (data?.user?.role === 'Admin') {
         this.loadAllWinners();
@@ -613,22 +642,22 @@ export default class App extends Component<{}, State> {
   }
 
   goToLanding = () => {
-    this.setState({ showAuth: false, viewLanding: true });
+    this.navigate('/');
   }
 
   goToDashboard = () => {
-    this.setState({ showAuth: false, viewLanding: false });
+    const { userRole } = this.state;
+    this.navigate(userRole === 'Admin' ? '/admin' : '/dashboard');
   }
 
   handleLogout = () => {
     this.setState({
       isLoggedIn: false,
-      showAuth: false,
-      viewLanding: true,
       activeSubscription: null,
       scores: [],
       userRole: 'User'
     });
+    this.navigate('/');
   }
 
   render() {
@@ -668,4 +697,3 @@ export default class App extends Component<{}, State> {
     );
   }
 }
-```
