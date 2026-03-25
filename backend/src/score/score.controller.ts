@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { SubscriptionGuard } from '../subscription/subscription.guard';
 
 @UseGuards(JwtAuthGuard)
-@Controller('api/scores')
+@Controller('scores')
 export class ScoreController {
   constructor(private readonly scoreService: ScoreService) {}
 

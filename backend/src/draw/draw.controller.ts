@@ -5,7 +5,7 @@ import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('api/admin/draws')
+@Controller('admin/draws')
 export class DrawController {
   constructor(private readonly drawService: DrawService) {}
 
