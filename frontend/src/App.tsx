@@ -50,7 +50,8 @@ export default class App extends Component<{}, State> {
       allUsers: [],
       analytics: null,
       newCharityName: '',
-      newCharityDesc: ''
+      newCharityDesc: '',
+      viewLanding: true
     };
   }
 
@@ -88,6 +89,7 @@ export default class App extends Component<{}, State> {
 
       this.setState({
         isLoggedIn: true,
+        viewLanding: false,
         userRole: data?.user?.role || 'User',
         selectedCharity: data?.user?.selectedCharity || selectedCharity,
       });
@@ -611,12 +613,27 @@ export default class App extends Component<{}, State> {
   }
 
   goToLanding = () => {
-    this.setState({ showAuth: false, isLoggedIn: false, activeSubscription: null, scores: [] });
+    this.setState({ showAuth: false, viewLanding: true });
+  }
+
+  goToDashboard = () => {
+    this.setState({ showAuth: false, viewLanding: false });
+  }
+
+  handleLogout = () => {
+    this.setState({
+      isLoggedIn: false,
+      showAuth: false,
+      viewLanding: true,
+      activeSubscription: null,
+      scores: [],
+      userRole: 'User'
+    });
   }
 
   render() {
-    const { isLoggedIn, showAuth } = this.state;
-    const showHomeBtn = isLoggedIn || showAuth;
+    const { isLoggedIn, showAuth, viewLanding } = this.state;
+    const isShowingDashboard = isLoggedIn && !showAuth && !viewLanding;
 
     return (
       <div className="app-container">
@@ -624,34 +641,26 @@ export default class App extends Component<{}, State> {
           <h1 style={{ margin: 0, cursor: 'pointer', fontSize: '1.8rem', letterSpacing: '3px' }} onClick={this.goToLanding}>
             Golf Charity Platform
           </h1>
-          {showHomeBtn && (
-            <button
-              onClick={this.goToLanding}
-              style={{
-                background: 'rgba(212,175,55,0.15)',
-                border: '2px solid var(--secondary)',
-                borderRadius: '8px',
-                color: 'var(--secondary)',
-                padding: '0.5rem 1.2rem',
-                cursor: 'pointer',
-                fontFamily: 'DM Sans, sans-serif',
-                fontWeight: 700,
-                fontSize: '0.95rem',
-                letterSpacing: '1px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={e => (e.currentTarget.style.background = 'rgba(212,175,55,0.35)')}
-              onMouseLeave={e => (e.currentTarget.style.background = 'rgba(212,175,55,0.15)')}
-            >
-              Home
-            </button>
-          )}
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            {!viewLanding && (
+              <button onClick={this.goToLanding} className="nav-btn-alt">Home</button>
+            )}
+            {isLoggedIn && viewLanding && !showAuth && (
+              <button onClick={this.goToDashboard} className="nav-btn-gold">Dashboard</button>
+            )}
+            {isLoggedIn && (
+              <button onClick={this.handleLogout} className="nav-btn-outline">Logout</button>
+            )}
+            {!isLoggedIn && !showAuth && (
+              <button onClick={() => this.setState({ showAuth: true, isRegistering: false })} className="nav-btn-gold">Login</button>
+            )}
+          </div>
         </header>
         <main className="main-content">
-          {isLoggedIn
-            ? this.renderDashboard()
-            : showAuth
-              ? this.renderAuth()
+          {showAuth 
+            ? this.renderAuth() 
+            : isShowingDashboard 
+              ? this.renderDashboard() 
               : this.renderLandingPage()
           }
         </main>
@@ -659,3 +668,4 @@ export default class App extends Component<{}, State> {
     );
   }
 }
+```
